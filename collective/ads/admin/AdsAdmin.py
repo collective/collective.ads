@@ -38,7 +38,8 @@ class AdsAdmin(UniqueObject,BaseFolder):
           
         atool = self.archetype_tool
         cat = self.portal_catalog
-        banner = atool.lookupObject(UID)
+        banner =  self.reference_catalog.lookupObject(UID)
+	#banner = atool.lookupObject(UID)
         intLink = banner.getLinkIntern()
         extLink = banner.getLinkExtern()
         link = (intLink and intLink.absolute_url()) or extLink
