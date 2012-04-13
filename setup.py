@@ -1,7 +1,14 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1'
+try:
+    # Try reading the version.txt from the product.
+    versionfile = open(os.path.join("collecitve", "ads", "version.txt"))
+    version = versionfile.read().strip()
+    versionfile.close()
+except IOError:
+    # fallback
+    version = '1.0'
 
 setup(name='collective.ads',
       version=version,
