@@ -3,12 +3,12 @@ import os
 
 try:
     # Try reading the version.txt from the product.
-    versionfile = open(os.path.join("collecitve", "ads", "version.txt"))
+    versionfile = open(os.path.join("collective", "ads", "version.txt"))
     version = versionfile.read().strip()
     versionfile.close()
 except IOError:
     # fallback
-    version='0.1',
+    version='0.1'
 
 setup(name='collective.ads',
       version=version,
