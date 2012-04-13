@@ -4,8 +4,12 @@ Changelog
 0.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+* Fix Plone 4 compatibilty for cmf.ManagePortal permissions
+* Clean up tabs to to spaces
+* Fix imports for Plone 4
+* Add keyword filtering to the banner portlet
+* Don't scale/limit the banner image to 150 pixels
+  [fvandijk]
 
 0.1 (2012-04-13)
 ----------------

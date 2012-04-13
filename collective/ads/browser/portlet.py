@@ -18,7 +18,12 @@ from Products.CMFPlone import PloneMessageFactory as _
 
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Acquisition import aq_inner, aq_base, aq_parent
-from Products.CMFPlone.interfaces import INonStructuralFolder, IBrowserDefault
+from Products.CMFPlone.interfaces import INonStructuralFolder 
+
+try:
+  from Products.CMFDynamicViewFTI.interfaces import IBrowserDefault
+except:
+  from Products.CMFPlone.interfaces import IBrowserDefault
 
 import random
 from DateTime import DateTime
@@ -31,7 +36,7 @@ from Products.Archetypes.public import DisplayList
 class IAdsPortlet(IPortletDataProvider):
     """A portlet which can render a Ads
     """
-        
+   
     name = schema.TextLine(
            title=_(u"label_title", default=u"Title"),
            description=_(u"help_title",
@@ -52,15 +57,32 @@ class IAdsPortlet(IPortletDataProvider):
                                     vocabulary="plone.app.vocabularies.WorkflowStates")
            )
 
+    keywords_filter = schema.Tuple(
+           title=_(u'portlet_label_keywords_filter',
+                   default=u'Keywords Filter'),
+           description=_(u'portlet_help_keywords_filter',
+                         default=u'Select which teasers with specific keywords '
+                                 u'should be shown. Select none to order to show '
+                                 u'any teasers.'),
+           default=None,
+           required=False,
+           value_type=schema.Choice(
+               vocabulary="plone.app.vocabularies.Keywords"),
+           )
+
         
 from Products.CMFPlone.utils import log
     
 class Assignment(base.Assignment):
     implements(IAdsPortlet)
-    def __init__(self,name=u"", count=5, state=('published', )):
+    
+    keywords_filter = None
+    
+    def __init__(self,name=u"", count=5, state=('published', ), keywords_filter=None):
         self.count = count
         self.state = state
         self.name= name
+        self.keywords_filter = keywords_filter
 
     title = _(u'Ads', default=u'Ads')
 
@@ -85,10 +107,15 @@ class Renderer(base.Renderer):
         state = self.data.state
         count = self.data.count
         
-        banners = catalog( portal_type='Banner',
-                                  effectiveRange=DateTime(),
-                                  review_state=state
-                                )
+        query = {}
+        query['portal_type']='Banner'
+        query['effectiveRange']=DateTime()
+        query['review_state']=state
+        
+        if self.data.keywords_filter:
+            query['Subject'] = self.data.keywords_filter
+            
+        banners = catalog(**query)
         bannerPool = []
 
         for banner in banners:
@@ -119,12 +146,12 @@ class AddForm(base.AddForm):
     description = _(u"Displays banners in this plone site ")
     
     def create(self, data):
-        return Assignment(name=data.get('name',''),count=data.get('count', 5), state=data.get('state', ('published',)))
+        return Assignment(name=data.get('name',''),count=data.get('count', 5), keywords_filter=data.get('keywords_filter',''), state=data.get('state', ('published',)))
     
 class EditForm(base.EditForm):
     
     form_fields = form.Fields(IAdsPortlet)
     label = _(u"Edit Ads Portlet")
-    description = _(u"Displays banners in this Plone sit")
+    description = _(u"Displays banners in this Plone site")
     
     

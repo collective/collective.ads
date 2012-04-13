@@ -4,7 +4,12 @@ from zope.interface import implements
 import interfaces
 
 from Products.CMFDynamicViewFTI.browserdefault import BrowserDefaultMixin
-from Products.ATReferenceBrowserWidget.ATReferenceBrowserWidget import ReferenceBrowserWidget
+
+try:
+  from archetypes.referencebrowserwidget.widget import ReferenceBrowserWidget
+except:
+  from Products.ATReferenceBrowserWidget.ATReferenceBrowserWidget import ReferenceBrowserWidget
+
 from collective.ads.config import *
 ##code-section module-header #fill in your manual code here
 ##/code-section module-header
@@ -42,8 +47,13 @@ schema = Schema((
         ),
         required=0,
         storage=AttributeStorage(),
-        max_size=(150, 150),
-        sizes={'small':(150,150)},
+        max_size=(1280, 800),
+        sizes={'468x60':(468,60),
+               '120x600':(120,600),
+               '160x600':(160,600),
+               '180x150':(180,150),
+               '300x250':(300,250),
+               '728x90':(728,90)},
     ),
 
     IntegerField(

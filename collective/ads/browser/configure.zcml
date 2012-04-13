@@ -3,6 +3,7 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:plone="http://namespaces.plone.org/plone"
     xmlns:five="http://namespaces.zope.org/five"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="collective.ads">
 
     <interface
@@ -11,6 +12,10 @@
         name="collective.ads"
         />
 
+    <include package="Products.CMFCore"
+       zcml:condition="have plone-41"
+       file="permissions.zcml" />
+         
 	<browser:resourceDirectory
 		name="collective.ads.images"
 		directory="images"
@@ -30,14 +35,6 @@
         addview=".portlet.AddForm"
 		editview=".portlet.EditForm"
         />
-	<!-- 
-    <browser:page
-        for="..admin.utility.IAdsPortal"
-        name="adsadmin-controlpanel"
-        class=".controlpanel.AdsAdminControlPanelForm"
-        permission="cmf.ManagePortal"
-        />
-	-->		
     <browser:page
         for="collective.ads.admin.utility.IAdsPortal"
         name="adsadmin"
