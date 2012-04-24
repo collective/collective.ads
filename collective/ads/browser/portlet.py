@@ -1,3 +1,5 @@
+from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
+
 from zope.interface import implements
 from zope.component import getMultiAdapter
 
@@ -18,7 +20,7 @@ from Products.CMFPlone import PloneMessageFactory as _
 
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Acquisition import aq_inner, aq_base, aq_parent
-from Products.CMFPlone.interfaces import INonStructuralFolder 
+from Products.CMFPlone.interfaces import INonStructuralFolder
 
 try:
   from Products.CMFDynamicViewFTI.interfaces import IBrowserDefault
@@ -27,7 +29,25 @@ except:
 
 import random
 from DateTime import DateTime
-import math 
+import math
+
+from zope.schema.interfaces import IVocabularyFactory
+from zope.interface import directlyProvides
+
+try:
+    from plone.app.imaging.utils import getAllowedSizes
+except ImportError:
+    getAllowedSizes = lambda: dict()
+
+
+def availablePloneAppImagingScalesVocabulary(context):
+    terms = []
+    for scale, (width, height) in getAllowedSizes().iteritems():
+        terms.append(SimpleTerm(scale, scale, \
+                                "%s (%dx%d)" % (scale, width, height)))
+
+    return SimpleVocabulary(terms)
+directlyProvides(availablePloneAppImagingScalesVocabulary, IVocabularyFactory)
 
 
 #from zope.schema.vocabulary import SimpleVocabulary
@@ -36,19 +56,19 @@ from Products.Archetypes.public import DisplayList
 class IAdsPortlet(IPortletDataProvider):
     """A portlet which can render a Ads
     """
-   
+
     name = schema.TextLine(
            title=_(u"label_title", default=u"Title"),
            description=_(u"help_title",
                          default=u"The title"),
            default=u"",
-           required=False)    
-    
+           required=False)
+
     count = schema.Int(title=_(u'Number of items to display'),
            description=_(u'How many items to list.'),
            required=True,
            default=5)
-    
+
     state = schema.Tuple(title=_(u"Workflow state"),
            description=_(u"Items in which workflow state to show."),
            default=('published', ),
@@ -56,6 +76,13 @@ class IAdsPortlet(IPortletDataProvider):
            value_type=schema.Choice(
                                     vocabulary="plone.app.vocabularies.WorkflowStates")
            )
+
+    scale= schema.Choice(title=_(u"Image scale"),
+                               description=_(u'Please select scale which will be used.'),
+                               required=True,
+                               default='mini',
+                               vocabulary="Available Images Scales",
+                        )
 
     keywords_filter = schema.Tuple(
            title=_(u'portlet_label_keywords_filter',
@@ -70,18 +97,19 @@ class IAdsPortlet(IPortletDataProvider):
                vocabulary="plone.app.vocabularies.Keywords"),
            )
 
-        
+
 from Products.CMFPlone.utils import log
-    
+
 class Assignment(base.Assignment):
     implements(IAdsPortlet)
-    
+
     keywords_filter = None
-    
-    def __init__(self,name=u"", count=5, state=('published', ), keywords_filter=None):
+
+    def __init__(self,name=u"", count=5, state=('published', ), scale="mini", keywords_filter=None):
         self.count = count
         self.state = state
         self.name= name
+        self.scale = scale
         self.keywords_filter = keywords_filter
 
     title = _(u'Ads', default=u'Ads')
@@ -91,36 +119,36 @@ class Renderer(base.Renderer):
 
     def __init__(self, context, request, view, manager, data):
         base.Renderer.__init__(self, context, request, view, manager, data)
-       
+
     def title(self):
-        return self.data.name or ''      
-        
+        return self.data.name or ''
+
     def update(self):
         pass
 
     #memoize @
     def getFilteredBanners(self):
-   
+
         context = aq_inner(self.context)
         catalog = getToolByName(context, 'portal_catalog')
-        
+
         state = self.data.state
         count = self.data.count
-        
+
         query = {}
         query['portal_type']='Banner'
         query['effectiveRange']=DateTime()
         query['review_state']=state
-        
+
         if self.data.keywords_filter:
             query['Subject'] = self.data.keywords_filter
-            
+
         banners = catalog(**query)
         bannerPool = []
 
         for banner in banners:
             percentage = banner.getPercent
-          
+
             #XXX make better check here /100 is not good.
             # check if not 0
             if percentage!=0:
@@ -129,11 +157,11 @@ class Renderer(base.Renderer):
                 if banner.getClicksUsed < banner.getClicks:
                     for i in range(percentage):
                         bannerPool.append(banner)
-        
+
         # get count and randomize
         if (len(bannerPool)>count):
             bannerPool = random.sample(bannerPool,count);
-        
+
         return bannerPool;
 
 
@@ -144,14 +172,12 @@ class AddForm(base.AddForm):
     form_fields = form.Fields(IAdsPortlet)
     label = _(u"Add Ads Portlet")
     description = _(u"Displays banners in this plone site ")
-    
+
     def create(self, data):
-        return Assignment(name=data.get('name',''),count=data.get('count', 5), keywords_filter=data.get('keywords_filter',''), state=data.get('state', ('published',)))
-    
+        return Assignment(name=data.get('name',''),count=data.get('count', 5), keywords_filter=data.get('keywords_filter',''), scale=data.get('scale', 'mini'), state=data.get('state', ('published',)))
+
 class EditForm(base.EditForm):
-    
+
     form_fields = form.Fields(IAdsPortlet)
     label = _(u"Edit Ads Portlet")
     description = _(u"Displays banners in this Plone site")
-    
-    

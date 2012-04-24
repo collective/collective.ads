@@ -35,7 +35,6 @@ schema = Schema((
         required=0,
         storage=AttributeStorage()
     ),
-	
     ImageField(
         name='bannerimage',
         widget=ImageField._properties['widget'](
@@ -48,12 +47,12 @@ schema = Schema((
         required=0,
         storage=AttributeStorage(),
         max_size=(1280, 800),
-        sizes={'468x60':(468,60),
-               '120x600':(120,600),
-               '160x600':(160,600),
-               '180x150':(180,150),
-               '300x250':(300,250),
-               '728x90':(728,90)},
+        sizes={'Ads468x60':(468,60),
+               'Ads120x600':(120,600),
+               'Ads160x600':(160,600),
+               'Ads180x150':(180,150),
+               'Ads300x250':(300,250),
+               'Ads728x90':(728,90)},
     ),
 
     IntegerField(
@@ -109,7 +108,7 @@ schema = Schema((
             label_msgid='Ads_label_linkExtern',
             i18n_domain='collective.ads',
         ),
-        
+
     ),
     copied_fields['effectiveDate'],
     copied_fields['expirationDate'],
@@ -144,6 +143,3 @@ registerType(Banner,PROJECTNAME)
 
 ##code-section module-footer #fill in your manual code here
 ##/code-section module-footer
-
-
-
