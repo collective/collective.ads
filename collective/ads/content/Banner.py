@@ -79,7 +79,7 @@ schema = Schema((
     IntegerField(
         name='percent',
         default="100",
-		widget=IntegerWidget(
+        widget=IntegerWidget(
             label='Showing rate in %',
             label_msgid='Ads_label_percent',
             i18n_domain='collective.ads',
