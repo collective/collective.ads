@@ -20,6 +20,7 @@
           <tal:if condition="python:bannerimage.getContentType().find('image')!=-1">
             <img alt="" tal:attributes="src string:${banner/absolute_url}/bannerimage_${view/data/scale};title string:${banner/title}; alt string:${banner/title}" />
           </tal:if>
+
         </span>
         <span tal:omit-tag="" tal:condition="source">
         <tal:if condition="python:source.getContentType().find('flash')!=-1">

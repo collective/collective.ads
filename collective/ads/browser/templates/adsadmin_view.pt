@@ -79,7 +79,7 @@
                   <tal:if condition="banner/getEffectiveDate">
                         <tr>
                               <td>
-                                    <strong>Online from</strong>:
+                                    <strong>Online since</strong>:
                               </td>
                               <td> <span tal:replace="python:here.toLocalizedTime(banner.getEffectiveDate(),1)" />
                               </td>

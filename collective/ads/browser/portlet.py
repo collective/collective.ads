@@ -23,9 +23,9 @@ from Acquisition import aq_inner, aq_base, aq_parent
 from Products.CMFPlone.interfaces import INonStructuralFolder
 
 try:
-  from Products.CMFDynamicViewFTI.interfaces import IBrowserDefault
+    from Products.CMFDynamicViewFTI.interfaces import IBrowserDefault
 except:
-  from Products.CMFPlone.interfaces import IBrowserDefault
+    from Products.CMFPlone.interfaces import IBrowserDefault
 
 import random
 from DateTime import DateTime
@@ -52,6 +52,7 @@ directlyProvides(availablePloneAppImagingScalesVocabulary, IVocabularyFactory)
 
 #from zope.schema.vocabulary import SimpleVocabulary
 from Products.Archetypes.public import DisplayList
+
 
 class IAdsPortlet(IPortletDataProvider):
     """A portlet which can render a Ads
@@ -80,7 +81,7 @@ class IAdsPortlet(IPortletDataProvider):
     scale= schema.Choice(title=_(u"Image scale"),
                                description=_(u'Please select scale which will be used.'),
                                required=True,
-                               default='mini',
+                               default='Ads180x150',
                                vocabulary="Available Images Scales",
                         )
 
@@ -90,7 +91,7 @@ class IAdsPortlet(IPortletDataProvider):
            description=_(u'portlet_help_keywords_filter',
                          default=u'Select which teasers with specific keywords '
                                  u'should be shown. Select none to order to show '
-                                 u'any teasers.'),
+                                 u'all teasers.'),
            default=None,
            required=False,
            value_type=schema.Choice(

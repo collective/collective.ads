@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.3 (unreleased)
+----------------
+
+* Fixed default scale in portlet to existing one
+* Some pyflakes/PEP8 clean up, removed unused imports
+* Fixed english text
+  [ralphjacobs]
+
 0.2 (unreleased)
 ----------------
 
@@ -15,4 +23,3 @@ Changelog
 ----------------
 
 * Initial release from 2009-01-09 as done on pypi
-

@@ -16,35 +16,32 @@
        zcml:condition="have plone-41"
        file="permissions.zcml" />
 
-	<browser:resourceDirectory
-		name="collective.ads.images"
-		directory="images"
-    />
-	<browser:resourceDirectory
-		name="collective.ads.stylesheets"
-		directory="stylesheets"
-    />
+    <browser:resourceDirectory
+            name="collective.ads.images"
+            directory="images" />
+    <browser:resourceDirectory
+            name="collective.ads.stylesheets"
+            directory="stylesheets" />
 
-	<!-- portlets -->
+    <!-- portlets -->
     <include package="plone.app.portlets" />
-	<plone:portlet
+    <plone:portlet
         name="portlets.adsportlet"
         interface=".portlet.IAdsPortlet"
         assignment=".portlet.Assignment"
         renderer=".portlet.Renderer"
         addview=".portlet.AddForm"
-		editview=".portlet.EditForm"
-        />
+        editview=".portlet.EditForm" />
+
     <browser:page
         for="collective.ads.admin.utility.IAdsPortal"
         name="adsadmin"
         class=".adsadmin.AdsAdminView"
-		template="templates/adsadmin_view.pt"
-        permission="cmf.ManagePortal"
-        />
+            template="templates/adsadmin_view.pt"
+        permission="cmf.ManagePortal" />
 
- <utility
+    <utility
         component=".portlet.availablePloneAppImagingScalesVocabulary"
         name="Available Images Scales"
-        />
+    />
 </configure>
